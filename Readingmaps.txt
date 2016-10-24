@@ -1,0 +1,132 @@
+
+
+
+
+library('maptools')
+
+setwd('C:/Users/koe/Dropbox/SveinTore')
+
+spar<-read.table("feltparametre_flomstasjoner145.txt",sep=",",header=TRUE)
+regine_nr<-as.integer(spar[,2]/100000000)
+main_nr<-(spar[,2]-regine_nr*100000000)/1000
+spar2<-read.table("feltparam_3stasjoner.txt",sep=",",header=TRUE)
+
+spar<-spar[,1:38]
+spar2<-spar2[,1:38]
+
+spar<-rbind(spar,spar2)
+write.table(spar,'cpar.txt',sep=",")
+
+# Reading catchment parameters
+spar<-read.table('cpar.txt',sep=",",header=TRUE)
+#Extracting the station numbers
+regine_nr<-as.integer(spar[,2]/100000000)
+main_nr<-(spar[,2]-regine_nr*100000000)/1000
+mnumbers<-(regine_nr*10000+main_nr)
+# Sort the list according to station number
+spar<-spar[order(mnumbers),]
+
+
+#Histogra,m av feltareal
+ahist<-hist(spar[,6])
+plot(ahist,xaxt='n',xlab="Areal",ylab="Antall",main="")
+axis(1, ahist$breaks,as.integer(exp(ahist$breaks)))
+
+#Histogram av middelhøyde
+hist(spar[,18],xlab="Median høyde",ylab="Antall",main="")
+
+
+ptfiles<-list.files("pt_1957-2014")
+
+pt_temp<-matrix(unlist(strsplit(ptfiles,'[.]')),nrow=145,byrow=TRUE)
+
+ptnumbers<-as.numeric(pt_temp[,1])*10000+(as.numeric(pt_temp[,2]))
+# Sort the list according to station number
+ptfiles<-ptfiles[order(ptnumbers)]
+
+
+
+ns<-length(ptfiles)
+ave_temp<-matrix(ncol=13,nrow=ns)
+ave_prec<-matrix(ncol=13,nrow=ns)
+for(i in 1 : ns){
+pt<-read.table(paste("pt_1957-2014/",ptfiles[i],sep=""))
+ave_temp[i,13]=mean(pt[,5])
+ave_prec[i,13]=mean(pt[,4])
+ave_temp[i,1:12]=as.numeric(by(pt[,5],pt[,2],mean))
+ave_prec[i,1:12]=as.numeric(by(pt[,4],pt[,2],mean))
+}
+
+
+#Omriss av Norge
+Norge=readShapeSpatial('GISDATA/norge.shp')
+
+# Shape fil med grenser for nedbÃ¸rsflet
+Mycatchments=readShapeSpatial('GISDATA/Hydrologi_TotalNedborfeltMalestasjon.shp')
+
+
+# Shape fil med mÃ¥lestasjoner
+MyStations=readShapeSpatial('GISDATA/Hydrologi_MaleserieMalestasjon.shp')
+
+
+
+
+# Select only streamflow stations
+MyStations<-MyStations[MyStations$stParaKode==1001,]
+
+#Select only unique versions (some are duplicated)
+MyStations<-MyStations[!(duplicated(MyStations$stSamletID)),]
+
+
+#LESER stasjonsliste
+#stationlist<-read.table('lavvannsdata.txt',skip=1)
+
+# 
+#substr(Mycatchments$stSamletID[1],1,4)
+
+
+regine_nr<-as.integer(spar[,2]/100000000)
+main_nr<-(spar[,2]-regine_nr*100000000)/1000
+mnumbers<-(regine_nr*10000+main_nr)
+#Need to use this since the GIS data has used station number ##162.4 in stead of 162.8
+#mnumbers[135]=162*10000+4
+
+
+forecasting_c<-Mycatchments[which((as.integer(substr(Mycatchments$stSamletID,1,4))*10000+as.integer(substr(Mycatchments$stSamletID,5,9)))%in%mnumbers),]
+forecasting_c<-forecasting_c[order(forecasting_c$stSamletID),]
+
+
+forecasting_s<-MyStations[which((as.integer(substr(MyStations$stSamletID,1,4))*10000+as.integer(substr(MyStations$stSamletID,5,9)))%in%mnumbers),]
+forecasting_s<-forecasting_s[order(forecasting_s$stSamletID),]
+
+x_min<-(-10000)
+x_max<-max(summary(Norge)$bbox[3])
+y_min<-min(summary(Norge)$bbox[2])
+y_max<-max(summary(Norge)$bbox[4])
+
+
+# Plotter kart
+windows(7,8)
+par(mar=c(0,0,0,0))
+plot(Norge)
+plot(forecasting_c,col=pcol,add=TRUE)
+#plot(forecasting_s,col=7,add=TRUE)
+#plot(lavvannsstasjoner,col=2,add=TRUE)
+points(forecasting_s,pch=19,cex=1.0,col="lightblue")
+ns=length(lavvannsstasjoner)
+
+# fargekoding ekempel
+rbPal <- colorRampPalette(c('blue','red'))
+
+#Lager 10 fargeklasser
+#Gir hver stasjonspunkt en tilfeldig farge. Kan bruke en annen #fargeinndeling.
+
+pcol <- rbPal(10)[as.numeric(cut(ave_temp[,13],breaks = c(-4,-3,-2,-1,0,1,2,3,4,5,6)))]
+
+
+points(forecasting_s,pch=19,cex=1.0,col=pcol)
+
+catchc<-read.table("catchments_parameter_2016_NR.csv",header=TRUE)
+
+
+
