@@ -7,10 +7,18 @@ legtitle="Correlation"
 
 library('maptools')
 library('RColorBrewer')
+source('PlotMap.R')
 
-
-#GisFolder<-'inst/GISDATA/'
+GisFolder<-'inst/GISDATA/'
 
 load_data_covers(GisFolder)
 
+corr_all<-read.table('correlations.txt')
+
 plot_map_points(cvalues=corr_all,v_index=8,c_index=10,cbins=c(-1.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9),legtitle="Correlation")
+
+plot_map_points(cvalues=corr_all,v_index=9,legtitle="Month")
+
+plot_map_points(cvalues=Reff_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7),legtitle="Reff")
+
+plot_map_points(cvalues=roc_all,v_index=8,p_index=17,cbins=c(0.5,0.55,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0),legtitle="ROC-area")
