@@ -59,6 +59,8 @@ roc_all<-read.table('inst/roc.txt')
 
 * cvalues is a matrix where each row represent a station and 
 the row name is the station ID given as regine number dot main number (e.g."2.11").
+* mappoints is a a SpatialPointsDataFrame with the station points
+*MapBorders is a a SpatialPolygonDataFrame
 * v_index is the index of the colomn to be plotted.
 * c_index is a possible colomn with the minimum significant value
 * p_index is a possible coloumn with p-values
@@ -69,15 +71,15 @@ Some examples are given below:
 
 ```R
 # A plot where v_index and c_index is specified. The insignificant points is colored grey. 
-plot_map_points(cvalues=corr_all,v_index=8,c_index=10,cbins=c(-1.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9),legtitle="Correlation")
+plot_map_points(cvalues=corr_all,mappoints=forecasting_s,mapborders=NORGE,pname='Spectral',pinv=TRUE,v_index=8,c_index=10,cbins=c(-1.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9),legtitle="Correlation")
 
 # A plot where only v_index is specified. Assumes a small number of unique values, each value gets its own color. 
-plot_map_points(cvalues=corr_all,v_index=9,legtitle="Month")
+plot_map_points(cvalues=corr_all,mappoints=forecasting_s,mapborders=NORGE,pname='Spectral',pinv=TRUE,v_index=9,legtitle="Month")
 
-# A plot where v_index and cbins is specified. Values lower than the lowest bin is colored grey
-plot_map_points(cvalues=Reff_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7),legtitle="Reff")
+# A plot where v_index and cbins is specified. In this case values lower than the lowest bin are colored grey
+plot_map_points(cvalues=Reff_all,mappoints=forecasting_s,mapborders=NORGE,pname='Spectral',pinv=TRUE,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7),legtitle="Reff")
 
 # a plot where v_index and p-values are specified. Insignificant points are grey
-plot_map_points(cvalues=roc_all,v_index=8,p_index=17,cbins=c(0.5,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0),legtitle="ROC-area")
+plot_map_points(cvalues=roc_all,mappoints=forecasting_s,mapborders=NORGE,pname='Spectral',pinv=TRUE,v_index=8,p_index=17,cbins=c(0.5,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0),legtitle="ROC-area")
 ```
 
