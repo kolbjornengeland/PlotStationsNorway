@@ -37,17 +37,17 @@ load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145
 
 
 
-plot_map_points<-function(cvalues,v_index=NA,c_index=NA,p_index=NA,cbins=NA,legtitle=NA){
+plot_map_points<-function(cvalues,mappoints=forecasting_s,mapborders=Norge,pname='Spectral',pinv=TRUE,v_index=NA,c_index=NA,p_index=NA,cbins=NA,legtitle=NA){
 windows(7,8)
 par(mar=c(0,0,1,0))
-plot(Norge)
+plot(mapborders)
 # To match the station IDs between the point cover and the values
-forecasting_ss<-forecasting_s[match(paste(rownames(corr_all),'.0',sep=''),forecasting_s$stID),]
+forecasting_ss<-mappoints[match(paste(rownames(corr_all),'.0',sep=''),mappoints$stID),]
 
 if(!is.na(cbins)){
 nco<-length(cbins)-1
-farve = brewer.pal(nco, "Spectral")
-farve<-farve[nco:1]
+farve = brewer.pal(nco, pname)
+if(pinv)farve<-farve[nco:1]
 legendtext<-c("Not significant",paste('<',cbins[2:length(cbins)]))
 if(is.na(c_index)&is.na(p_index))legendtext<-paste('<',cbins[1:length(cbins)])
 }
