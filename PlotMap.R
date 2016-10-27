@@ -1,7 +1,7 @@
 
 
 
-load_data_covers<-function(GisFolder){
+load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145.txt"){
 
   #Omriss av Norge
   Norge<<-readShapeSpatial(paste(GisFolder,'norge.shp',sep=''))
@@ -11,7 +11,7 @@ load_data_covers<-function(GisFolder){
   
   # Shape fil med målestasjoner
   MyStations<<-readShapeSpatial(paste(GisFolder,'Hydrologi_MaleserieMalestasjon.shp',sep=''))
-  spar<<-read.table("inst/feltparametre_flomstasjoner145.txt",sep="\t",header=TRUE)
+  spar<<-read.table(ccfile,sep="\t",header=TRUE)
   regine_nr<-as.integer(spar[,2]/100000000)
   main_nr<-(spar[,2]-regine_nr*100000000)/1000
   mnumbers<-(regine_nr*10000+main_nr)
