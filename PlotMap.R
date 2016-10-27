@@ -2,7 +2,11 @@
 
 
 load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145.txt"){
-
+  if (!require('maptools')) {
+    stop('The package maptools was not installed')
+  }
+  
+  
   #Omriss av Norge
   Norge<<-readShapeSpatial(paste(GisFolder,'norge.shp',sep=''))
   
@@ -38,6 +42,12 @@ load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145
 
 
 plot_map_points<-function(cvalues,mappoints=forecasting_s,mapborders=Norge,pname='Spectral',pinv=TRUE,v_index=NA,c_index=NA,p_index=NA,cbins=NA,legtitle=NA){
+  if (!require('maptools')) {
+    stop('The package maptools was not installed')
+  }
+  if (!require('RColorBrewer')) {
+      stop('The package RColorBrewer was not installed')
+  }  
 windows(7,8)
 par(mar=c(0,0,1,0))
 plot(mapborders)
