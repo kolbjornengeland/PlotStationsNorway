@@ -47,76 +47,39 @@ load_data_covers(GisFolder,ccfile)
 
 # Loading example data to be plotted:
 ```R
-corr_all<-read.table('correlation.txt')
-
+corr_all<-read.table('inst/correlations.txt')
+Reff_all<-read.table('inst/Reff.txt')
+crpss_all<-read.table('inst/crpss.txt')
+bss_all<-read.table('inst/bss.txt')
+csi_all<-read.table('inst/csi.txt')
+roc_all<-read.table('inst/roc.txt')
 ```
 
-# Plotting best correlation
+# Plotting values on a map
+
+* cvalues is a matrix where each row represent a station and 
+the row name is the station ID given as regine number dot main number (e.g."2.11").
+* v_index is the index of the colomn to be plotted.
+* c_index is a possible colomn with the minimum significant value
+* p_index is a possible coloumn with p-values
+* cbins is used for binning the data in v_index. Each bin gets its own color 
+* legtitle is the title of the legend
+
+Some examples are given below:
+
 ```R
+# A plot where v_index and c_index is specified. The insignificant points is colored grey. 
 plot_map_points(cvalues=corr_all,v_index=8,c_index=10,cbins=c(-1.0,0.3,0.4,0.5,0.6,0.7,0.8,0.9),legtitle="Correlation")
-```
 
-#plotting month with best correlation
-```R
+# A plot where only v_index is specified. Assumes a small number of unique values, each value gets its own color. 
 plot_map_points(cvalues=corr_all,v_index=9,legtitle="Month")
 ```
 
-# Plotting best Reff
-```R
+# A plot where v_index and cbins is specified. Values lower than the lowest bin is colored grey
 plot_map_points(cvalues=Reff_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7),legtitle="Reff")
 ```
 
-#plotting month with best Reff
-```
-plot_map_points(cvalues=Reff_all,v_index=9,legtitle="Month")
-```
-
-# Plotting best csi
-```
-plot_map_points(cvalues=csi_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5,0.6,0.7),legtitle="csi")
-```
-
-#plotting month with best csi
-```
-plot_map_points(cvalues=csi_all,v_index=9,legtitle="Month")
-```
-
-#plotting best roc
-```R
+# a plot where v_index and p-values are specified. Insignificant points are grey
 plot_map_points(cvalues=roc_all,v_index=8,p_index=17,cbins=c(0.5,0.6,0.65,0.7,0.75,0.8,0.85,0.9,0.95,1.0),legtitle="ROC-area")
 ```
 
-#plotting month with best roc
-```R
-plot_map_points(cvalues=roc_all,v_index=9,legtitle="Month")
-```
-
-#plotting best crpss
-```R
-plot_map_points(cvalues=crpss_all,v_index=8,p_index=17,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5),legtitle="CRPSS")
-```
-
-#plotting best crpss
-```R
-plot_map_points(cvalues=crpss_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5),legtitle="CRPSS")
-```
-
-#plotting month with best crpss
-```R
-plot_map_points(cvalues=crpss_all,v_index=9,legtitle="Month")
-```
-
-#plotting best bss
-```R
-plot_map_points(cvalues=bss_all,v_index=8,p_index=17,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5),legtitle="BSS")
-```
-
-#plotting best bss
-```R
-plot_map_points(cvalues=bss_all,v_index=8,cbins=c(0.0,0.1,0.2,0.3,0.4,0.5),legtitle="BSS")
-```
-
-#plotting month with best bss
-```R
-plot_map_points(cvalues=bss_all,v_index=9,legtitle="Month")
-```
