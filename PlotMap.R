@@ -1,7 +1,7 @@
 
 
 
-load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145.txt"){
+load_data_covers<-function(GisFolder,ccfile=NA,mnumbers=NA){
   if (!require('maptools')) {
     stop('The package maptools was not installed')
   }
@@ -15,13 +15,17 @@ load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145
   
   # Shape fil med målestasjoner
   MyStations<<-readShapeSpatial(paste(GisFolder,'Hydrologi_MaleserieMalestasjon.shp',sep=''))
+  
+  # asci-fil med feltkarakteristika
+  if(!is.na(ccfile)){
   spar<<-read.table(ccfile,sep="\t",header=TRUE)
   regine_nr<-as.integer(spar[,2]/100000000)
   main_nr<-(spar[,2]-regine_nr*100000000)/1000
-  mnumbers<-(regine_nr*10000+main_nr)
+  mnumbers<-(regine_nr*100000+main_nr)
 # Sort the list according to station number
   spar<-spar[order(mnumbers),]
-                        
+  }
+  
 # Select only streamflow stations
   MyStations<-MyStations[MyStations$stParaKode==1001,]
                         
@@ -32,9 +36,9 @@ load_data_covers<-function(GisFolder,ccfile="inst/feltparametre_flomstasjoner145
 #  Mycatchments[Mycatchments$stID=='24.3',]$stSamletID <- 002400008000
 #  Mycatchments[Mycatchments$stID=='24.3',]$stID <- '24.8'
 ####################################################################                                    
-  forecasting_c<<-Mycatchments[which((as.integer(substr(Mycatchments$stSamletID,1,4))*10000+as.integer(substr(Mycatchments$stSamletID,5,9)))%in%mnumbers),]
+  forecasting_c<<-Mycatchments[which((as.integer(substr(Mycatchments$stSamletID,1,4))*100000+as.integer(substr(Mycatchments$stSamletID,5,9)))%in%mnumbers),]
   forecasting_c<<-forecasting_c[order(forecasting_c$stSamletID),]                        
-  forecasting_s<<-MyStations[which((as.integer(substr(MyStations$stSamletID,1,4))*10000+as.integer(substr(MyStations$stSamletID,5,9)))%in%mnumbers),]
+  forecasting_s<<-MyStations[which((as.integer(substr(MyStations$stSamletID,1,4))*100000+as.integer(substr(MyStations$stSamletID,5,9)))%in%mnumbers),]
   forecasting_s<<-forecasting_s[order(forecasting_s$stSamletID),]
 }
 
@@ -48,11 +52,12 @@ plot_map_points<-function(cvalues,mappoints=forecasting_s,mapborders=Norge,pname
   if (!require('RColorBrewer')) {
       stop('The package RColorBrewer was not installed')
   }  
+  if(is.na(legtitle))legtitle=colnames(cvalues)[v_index]
 windows(7,8)
 par(mar=c(0,0,1,0))
 plot(mapborders)
 # To match the station IDs between the point cover and the values
-forecasting_ss<-mappoints[match(paste(rownames(corr_all),'.0',sep=''),mappoints$stID),]
+forecasting_ss<-mappoints[match(paste(rownames(cvalues),'.0',sep=''),mappoints$stID),]
 
 if(!is.na(cbins)){
 nco<-length(cbins)-1
