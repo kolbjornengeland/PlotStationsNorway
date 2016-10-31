@@ -7,7 +7,7 @@ R package for plotting caharcetristics of streamflow stations on  a map of Norwa
 Download the *.R files into your own directory and 'source' them:
 
 ```R
-setwd('C:/Users/koe/Documents/PlotStationsNorway')
+setwd('C:/Users/koe/Documents/PlotStationsNorway/PlotStationsNorway')
 source('PlotMap.R')
 ```
 
@@ -37,12 +37,14 @@ The shape-files with catchments boundaries are loaded into teh base environment,
 
 Arguments: 
 GiSfolder is the folder where the shape-files are stored
-ccfile is a text-file with catchment characteristics.
-
+ccfile is a text-file with catchment characteristics. If ccfile is NA, the array mnumbers has to be specified.
+mnumbers is an array with station numbers specified as regine_nr*10000+main_nr. If mnumbers is NA, the file with catchment characteristics has to be specified.
 ```R
 GisFolder<-'inst/GISDATA/'
 ccfile<-"inst/feltparametre_flomstasjoner145.txt"
-load_data_covers(GisFolder,ccfile)
+load_data_covers(GisFolder,ccfile=ccfile)
+
+load_data_covers(GisFolder,mnumbers=slist)
 ```
 
 # Loading example data to be plotted:
